@@ -10,7 +10,7 @@ jobs:
         node-version: [14.x]
     steps:
     - name: Checkout Code
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
@@ -18,8 +18,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install Project Depedancies
-      run: |
-        npm ci
+      run:  npm ci
     - name: Install Gatsby CLI
       run: npm install -g gatsby-cli@2.12.34
 
@@ -42,7 +41,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
     - name: Download public dir
       uses: actions/download-artifact@v2
       with:
