@@ -1,0 +1,58 @@
+name: Build and Deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - name: Checkout Code
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install Project Depedancies
+      run: |
+        npm ci
+    - name: Install Gatsby CLI
+      run: npm install -g gatsby-cli@2.12.34
+
+    - name: Build
+      run: gatsby build
+
+    - name: Verify build
+      run: ls -la public
+
+    - name: Upload public dir
+      uses: actions/upload-artifact@v2
+      with:
+        name: public
+        path: public
+      env:
+        CI: true
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download public dir
+      uses: actions/download-artifact@v2
+      with:
+        name: public
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_EUKHOST_PRIVATE_KEY }}
+        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+    - name: Adding Known Hosts
+      run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+    - name: Deploy with rsync
+      run: rsync -avz public/ ${{ secrets.DEPLOY_USER }}@${{ secrets.HOST }}:${{ secrets.DESTINATION_PATH }}
