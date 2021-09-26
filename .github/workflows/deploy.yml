@@ -41,11 +41,13 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: public
+    - name: Display structure of downloaded files
+      run: ls -R
     - name: SSH and RSync
       uses: burnett01/rsync-deployments@5.1
       with:
         switches: -avzr --exclude="/dist/, /node_modules/"
-        path: public/
+        path: /home/runner/work/randomly-alex.com/randomly-alex.com/public/
         remote_path: ${{ secrets.DESTINATION_PATH }}
         remote_host: ${{ secrets.HOST }}
         remote_port: ${{ secrets.SSH_PORT }}
