@@ -42,13 +42,14 @@ jobs:
       with:
         name: public
     - name: SSH and RSync
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_A2_PRIVATE_KEY }}
-        ARGS: "-avz"
-        SOURCE: "public/"
-        REMOTE_HOST: ${{ secrets.HOST }}
-        REMOTE_USER: ${{ secrets.DEPLOY_USER }}
-        REMOTE_PORT: ${{ secrets.SSH_PORT }}
-        TARGET: ${{ secrets.DESTINATION_PATH }}
-        EXCLUDE: "/dist/, /node_modules/"
+      uses: burnett01/rsync-deployments@5.1
+      with:
+        switches: -avzr --exclude="/dist/, /node_modules/"
+        path: public/
+        remote_path: ${{ secrets.DESTINATION_PATH }}
+        remote_host: ${{ secrets.HOST }}
+        remote_port: ${{ secrets.SSH_PORT }}
+        remote_user: ${{ secrets.DEPLOY_USER }}
+        remote_key: ${{ secrets.SSH_A2_PRIVATE_KEY }}
+        remote_key_pass: ${{ secrets.SSH_A2_PRIVATE_KEY_PASS }}
+
