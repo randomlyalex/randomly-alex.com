@@ -47,7 +47,7 @@ jobs:
       uses: burnett01/rsync-deployments@5.1
       with:
         switches: -avzr --exclude="/dist/, /node_modules/"
-        path: /home/runner/work/randomly-alex.com/randomly-alex.com/public/
+        path: ${{ github.workspace }}/public
         remote_path: ${{ secrets.DESTINATION_PATH }}
         remote_host: ${{ secrets.HOST }}
         remote_port: ${{ secrets.SSH_PORT }}
