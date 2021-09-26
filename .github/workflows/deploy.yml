@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
-    - name: Branch name
+    - name: Running on branch ${GITHUB_REF##*/}
       run: echo running on branch ${GITHUB_REF##*/}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
@@ -41,6 +41,8 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
+    - name: Running on branch ${GITHUB_REF##*/}
+      run: echo running on branch ${GITHUB_REF##*/}
     - name: Download public dir
       uses: actions/download-artifact@v2
       with:
